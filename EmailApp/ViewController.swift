@@ -41,6 +41,8 @@ class ViewController: UIViewController, UIDropInteractionDelegate, UITextViewDel
     emailBodyField.textDropDelegate = self
     subjectField.textDropDelegate = self
     emailBodyField.allowsEditingTextAttributes = true
+    emailBodyField.layer.borderWidth = 0.5
+    emailBodyField.layer.borderColor = UIColor.lightGray.cgColor
   }
   
   

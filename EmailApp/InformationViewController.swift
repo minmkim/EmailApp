@@ -108,9 +108,12 @@ class InformationViewController: UIViewController, UITextViewDelegate {
         listOfTitles[number].text = String(listToUse[number].dropFirst(2).dropLast(2))
       }
     }
-    
+    emailBodyView.layer.borderWidth = 0.5
+    emailBodyView.layer.borderColor = UIColor.lightGray.cgColor
     for number in 0..<listOfTextLabel.count {
       listOfTextLabel[number].delegate = self
+      listOfTextLabel[number].layer.borderWidth = 0.5
+      listOfTextLabel[number].layer.borderColor = UIColor.lightGray.cgColor
     }
     
     for number in 1...listOfTextLabel.count {

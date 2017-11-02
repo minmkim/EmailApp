@@ -25,8 +25,16 @@ class SendInformationViewController: UIViewController, UITextViewDelegate {
   override func viewDidLoad() {
     super.viewDidLoad()
     emailBodyView.delegate = self
+    emailBodyView.layer.borderWidth = 0.5
+    emailBodyView.layer.borderColor = UIColor.lightGray.cgColor
+    toView.layer.borderWidth = 0.5
+    toView.layer.borderColor = UIColor.lightGray.cgColor
+    ccView.layer.borderWidth = 0.5
+    ccView.layer.borderColor = UIColor.lightGray.cgColor
+    bccView.layer.borderWidth = 0.5
+    bccView.layer.borderColor = UIColor.lightGray.cgColor
     for number in 0..<emailList.count {
-      emailBodyView.text! += "Subject \(number):\n\(subjectList[number])\n\nBody \(number):\n\(emailList[number]\n\n)"
+      emailBodyView.text! += "Subject \(number):\n\(subjectList[number])\n\nBody \(number):\n\(emailList[number])\n\n"
     }
     
   }
