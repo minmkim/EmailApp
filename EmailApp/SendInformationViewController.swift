@@ -42,8 +42,8 @@ class SendInformationViewController: UIViewController, UITextViewDelegate {
   
   @IBAction func sendButtonPress(_ sender: Any) {
     print("button")
-    print(subjectList)
-    print(emailList)
+    //print(subjectList)
+    //print(emailList)
     var listOfToEmails = [String]()
     listOfToEmails = toView.text.components(separatedBy: .newlines)
     
@@ -58,7 +58,57 @@ class SendInformationViewController: UIViewController, UITextViewDelegate {
     } else {
       print("To emails != email count")
     }
+    
+    let ccList = ccView.text.components(separatedBy: .newlines).count
+    let bccList = bccView.text.components(separatedBy: .newlines).count
 
+ /*   for number in 0...(listOfToEmails.count - 1) {
+      print("email list \(emailList)")
+      print("listOfToEmails \(listOfToEmails)")
+      print("subjectList \(subjectList)")
+      print(number)
+      print(smtpUserInfo.host!)
+      print(smtpUserInfo.username!)
+      print(smtpUserInfo.password!)
+      print(UInt32(Int(smtpUserInfo.port!)!))
+      let smtpSession = MCOSMTPSession()
+      smtpSession.hostname = smtpUserInfo.host!
+      smtpSession.username = smtpUserInfo.username!
+      smtpSession.password = smtpUserInfo.password!
+      smtpSession.port = UInt32(Int(smtpUserInfo.port!)!)
+      smtpSession.authType = MCOAuthType.saslPlain
+      smtpSession.connectionType = MCOConnectionType.TLS
+      smtpSession.connectionLogger = {(connectionID, type, data) in
+        if data != nil {
+          if let string = NSString(data: data!, encoding: String.Encoding.utf8.rawValue){
+            NSLog("Connectionlogger: \(string)")
+          }
+        }
+      }
+      
+      let builder = MCOMessageBuilder()
+      builder.header.to = [MCOAddress(displayName: "", mailbox: listOfToEmails[number])]
+      builder.header.from = MCOAddress(displayName: "", mailbox: smtpUserInfo.username!)
+      builder.header.subject = subjectList[number]
+      let attributedString = NSMutableAttributedString(string: emailList[number])
+      let emailHTML = convertToHTML(string: attributedString)
+      builder.htmlBody = emailHTML
+      
+      let rfc822Data = builder.data()
+      let sendOperation = smtpSession.sendOperation(with: rfc822Data!)
+      sendOperation?.start { (error) -> Void in
+        if (error != nil) {
+          NSLog("Error sending email: \(error)")
+        } else {
+          NSLog("Successfully sent email!")
+        }
+      }
+      
+    }*/
+  }
+    
+    
+    
     /*
       let alertController = UIAlertController(title: "Error!", message: "Not all columns have the same number of items", preferredStyle: UIAlertControllerStyle.alert)
       let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
@@ -68,6 +118,24 @@ class SendInformationViewController: UIViewController, UITextViewDelegate {
       self.present(alertController, animated: true, completion: nil)
     }*/
     
+  //}
+  
+  func convertToHTML(string: NSAttributedString) -> String {
+    
+    let attrStr = string
+    let documentAttributes = [NSAttributedString.DocumentAttributeKey.documentType: NSAttributedString.DocumentType.html]
+    do {
+      let htmlData = try attrStr.data(from: NSMakeRange(0, attrStr.length), documentAttributes:documentAttributes)
+      if let htmlString = String(data:htmlData, encoding:String.Encoding.utf8) {
+        return htmlString
+        // print(htmlString)
+      }
+    }
+    catch {
+      print("error creating HTML from Attributed String")
+      
+    }
+    return "Error"
   }
   
   override func didReceiveMemoryWarning() {

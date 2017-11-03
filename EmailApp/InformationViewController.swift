@@ -95,14 +95,15 @@ class InformationViewController: UIViewController, UITextViewDelegate {
   var finalSubjectList = [String]() // list of email subject with all the variables added
   
   
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     listOfTitles = [self.titleLabel1, self.titleLabel2, self.titleLabel3, self.titleLabel4, self.titleLabel5, self.titleLabel6, self.titleLabel7, self.titleLabel8, self.titleLabel9, self.titleLabel10, self.titleLabel11, self.titleLabel12, self.titleLabel13, self.titleLabel14, self.titleLabel15, self.titleLabel16]
     listOfTextLabel = [self.textLabel1, self.textLabel2, self.textLabel3, self.textLabel4, self.textLabel5, self.textLabel6, self.textLabel7, self.textLabel8, self.textLabel9, self.textLabel10, self.textLabel11, self.textLabel12, self.textLabel13, self.textLabel14, self.textLabel15, self.textLabel16]
     listOfcountLabel = [self.countLabel1, self.countLabel2, self.countLabel3, self.countLabel4, self.countLabel5, self.countLabel6, self.countLabel7, self.countLabel8, self.countLabel9, self.countLabel10, self.countLabel11, self.countLabel12, self.countLabel13, self.countLabel14, self.countLabel15, self.countLabel16]
-//    listToUse.insert("To", at: 0)
-//    listToUse.insert("CC", at: 1)
-//    listToUse.insert("BCC", at: 2)
+    //    listToUse.insert("To", at: 0)
+    //    listToUse.insert("CC", at: 1)
+    //    listToUse.insert("BCC", at: 2)
     
     if listToUse.count > 0 {
       for number in 0..<listToUse.count {
@@ -135,11 +136,11 @@ class InformationViewController: UIViewController, UITextViewDelegate {
     emailBodyView.text = "Subject:\n\(subjectText!)\n\nBody:\n\(emailBodyText!)"
     
     
-  //  print(subjectText)
+    //  print(subjectText)
   }
   
   @IBAction func testPress(_ sender: Any) {
-  //  print(subjectText)
+    //  print(subjectText)
     var counter = -1
     
     components = listOfTextLabel[0].text.components(separatedBy: .newlines) // need to update this based on each component
@@ -172,32 +173,36 @@ class InformationViewController: UIViewController, UITextViewDelegate {
           newString = newString.replacingOccurrences(of: "[[\(listOfTitles[counter].text!)]]", with: newComponent[number])
           print("1 \(newString)")
           printString = newString
+          let attributedString = NSMutableAttributedString(string: printString)
+          //     printString = printString.replacingOccurrences(of: "\n", with: "<br>")
         }
-        printString = printString.replacingOccurrences(of: "\n", with: "<br>")
-        finalEmailList.append(printString)
-        var newCounter = -1
-        if subjectText!.range(of: "[[") != nil {
-          for item in listToUse { // for number of variables that we need to update in string
-            newCounter += 1
-            let newComponent = listOfTextLabel[newCounter].text.components(separatedBy: .newlines)
-            newSubject = newSubject.replacingOccurrences(of: "[[\(listOfTitles[newCounter].text!)]]", with: newComponent[number])
-            print("1 \(newSubject)")
+          finalEmailList.append(printString)
+          var newCounter = -1
+          if subjectText!.range(of: "[[") != nil {
+            for item in listToUse { // for number of variables that we need to update in string
+              newCounter += 1
+              let newComponent = listOfTextLabel[newCounter].text.components(separatedBy: .newlines)
+              newSubject = newSubject.replacingOccurrences(of: "[[\(listOfTitles[newCounter].text!)]]", with: newComponent[number])
+              print("1 \(newSubject)")
+              printSubject = newSubject
+            }
+          } else {
             printSubject = newSubject
           }
-        } else {
-          printSubject = newSubject
+          finalSubjectList.append(printSubject)
+          //    let emailString = printString
+          emailBodyView.text! += "\n\nSubject \(number):\n\(finalSubjectList[number])\n\nBody \(number):\n\(finalEmailList[number])"
+          
+          
+          
+          print("2 \(printString)")
         }
-        finalSubjectList.append(printSubject)
-    //    let emailString = printString
-        emailBodyView.text! += "\n\nSubject \(number):\n\(finalSubjectList[number])\n\nBody \(number):\n\(finalEmailList[number])"
-        
-        
-        print("2 \(printString)")
       }
-    }
-    print("Final \(finalEmailList)\n\n\n\n\n\n\n\n\n\n\n")
-    performSegue(withIdentifier: "SendInformationSegue", sender: self)
+      print("Final \(finalEmailList)\n\n\n\n\n\n\n\n\n\n\n")
+      performSegue(withIdentifier: "SendInformationSegue", sender: self)
+    
   }
+  
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     let controller = segue.destination as! SendInformationViewController
@@ -208,6 +213,7 @@ class InformationViewController: UIViewController, UITextViewDelegate {
     controller.emailList = finalEmailList
     controller.smtpUserInfo = smtpUserInfo
   }
+  
   
   
   //need to make tests to ensure that the email is sent correctly.
