@@ -61,62 +61,72 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, UITableVie
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    let controller = segue.destination as! InformationViewController
-    usedList = Array(Set(usedList)) // remove duplicates
-    
-    for item in usedList { //remove any variables that were not used in email body or subject (dropped in but removed)
-      if (emailBodyField.text.range(of: item) != nil) || (subjectField.text?.range(of: item) != nil) {
-        //variable was used in email body or subject
-      } else {
-        usedList = usedList.filter{$0 != item}
+    if segue.identifier == "SetupSegue" {
+      let controller = segue.destination as! InformationViewController
+      usedList = Array(Set(usedList)) // remove duplicates
+      
+      for item in usedList { //remove any variables that were not used in email body or subject (dropped in but removed)
+        if (emailBodyField.text.range(of: item) != nil) || (subjectField.text?.range(of: item) != nil) {
+          //variable was used in email body or subject
+        } else {
+          usedList = usedList.filter{$0 != item}
+        }
       }
+      
+      controller.listToUse = usedList
+      controller.emailBodyText = emailBodyField.text
+      print(subjectField.text)
+      controller.subjectText = subjectField.text
+      controller.smtpUserInfo = smtpUserInfo
+      
+      /*   let smtpSession = MCOSMTPSession()
+       smtpSession.hostname = "smtp.mailplug.co.kr"
+       smtpSession.username = "int.law_gb@hwpl.kr"
+       smtpSession.password = "intlaw05!@"
+       smtpSession.port = 465
+       smtpSession.authType = MCOAuthType.saslPlain
+       smtpSession.connectionType = MCOConnectionType.TLS
+       smtpSession.connectionLogger = {(connectionID, type, data) in
+       if data != nil {
+       if let string = NSString(data: data!, encoding: String.Encoding.utf8.rawValue){
+       NSLog("Connectionlogger: \(string)")
+       }
+       }
+       }
+       
+       let builder = MCOMessageBuilder()
+       builder.header.tos = [MCOAddress(displayName: "Nahye", mailbox: "hyehey115@gmail.com")]
+       builder.header.from = MCOAddress(displayName: "HWPL", mailbox: "int.law_gb@hwpl.kr")
+       builder.header.subject = "TESTING"
+       builder.htmlBody = emailBodyField.text
+       
+       let rfc822Data = builder.data()
+       let sendOperation = smtpSession.sendOperation(with: rfc822Data!)
+       sendOperation?.start { (error) -> Void in
+       if (error != nil) {
+       NSLog("Error sending email: \(error)")
+       } else {
+       NSLog("Successfully sent email!")
+       }
+       } */
+      /*
+       var dataImage: NSData?
+       dataImage = UIImageJPEGRepresentation(image, 0.6)!
+       var attachment = MCOAttachment()
+       attachment.mimeType =  "image/jpg"
+       attachment.filename = "image.jpg"
+       attachment.data = dataImage
+       builder.addAttachment(attachment)
+       */
+    } else if segue.identifier == "SettingsSegue" {
+       let controller = segue.destination as! SettingsViewController
+      print(segue)
+      print(smtpUserInfo)
+      controller.receivedData = smtpUserInfo
     }
-    
-    controller.listToUse = usedList
-    controller.emailBodyText = emailBodyField.text
-    print(subjectField.text)
-    controller.subjectText = subjectField.text
-    
-    /*   let smtpSession = MCOSMTPSession()
-     smtpSession.hostname = "smtp.mailplug.co.kr"
-     smtpSession.username = "int.law_gb@hwpl.kr"
-     smtpSession.password = "intlaw05!@"
-     smtpSession.port = 465
-     smtpSession.authType = MCOAuthType.saslPlain
-     smtpSession.connectionType = MCOConnectionType.TLS
-     smtpSession.connectionLogger = {(connectionID, type, data) in
-     if data != nil {
-     if let string = NSString(data: data!, encoding: String.Encoding.utf8.rawValue){
-     NSLog("Connectionlogger: \(string)")
-     }
-     }
-     }
-     
-     let builder = MCOMessageBuilder()
-     builder.header.to = [MCOAddress(displayName: "Nahye", mailbox: "hyehey115@gmail.com")]
-     builder.header.from = MCOAddress(displayName: "HWPL", mailbox: "int.law_gb@hwpl.kr")
-     builder.header.subject = "TESTING"
-     builder.htmlBody = emailBodyField.text
-     
-     let rfc822Data = builder.data()
-     let sendOperation = smtpSession.sendOperation(with: rfc822Data!)
-     sendOperation?.start { (error) -> Void in
-     if (error != nil) {
-     NSLog("Error sending email: \(error)")
-     } else {
-     NSLog("Successfully sent email!")
-     }
-     } */
-    /*
-     var dataImage: NSData?
-     dataImage = UIImageJPEGRepresentation(image, 0.6)!
-     var attachment = MCOAttachment()
-     attachment.mimeType =  "image/jpg"
-     attachment.filename = "image.jpg"
-     attachment.data = dataImage
-     builder.addAttachment(attachment)
-     */
   }
+    
+    
   
   
 }

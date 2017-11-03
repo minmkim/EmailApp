@@ -83,6 +83,7 @@ class InformationViewController: UIViewController, UITextViewDelegate {
   var listOfTitles = [UILabel]()
   var listOfTextLabel = [UITextView]()
   var listOfcountLabel = [UILabel]()
+  var smtpUserInfo = SMTPLogIn()
   
   var listToUse = [String]()
   var emailBodyText: String?
@@ -205,6 +206,7 @@ class InformationViewController: UIViewController, UITextViewDelegate {
     print(finalEmailList)
     controller.subjectList = finalSubjectList
     controller.emailList = finalEmailList
+    controller.smtpUserInfo = smtpUserInfo
   }
   
   

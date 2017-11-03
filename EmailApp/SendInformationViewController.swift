@@ -12,6 +12,7 @@ class SendInformationViewController: UIViewController, UITextViewDelegate {
   
   var emailList = [String]()
   var subjectList = [String]()
+  var smtpUserInfo = SMTPLogIn()
   
   @IBOutlet weak var ccCountLabel: UILabel!
   @IBOutlet weak var bccCountLabel: UILabel!
@@ -43,7 +44,32 @@ class SendInformationViewController: UIViewController, UITextViewDelegate {
     print("button")
     print(subjectList)
     print(emailList)
+    var listOfToEmails = [String]()
+    listOfToEmails = toView.text.components(separatedBy: .newlines)
+    
+    //check to make sure to list == email list == subjectlist
+    if emailList.count == subjectList.count {
+      print("email = subject count")
+    } else {
+      print("email != subject count")
+    }
+    if listOfToEmails.count == emailList.count {
+      print("To emails = email count")
+    } else {
+      print("To emails != email count")
+    }
+
+    /*
+      let alertController = UIAlertController(title: "Error!", message: "Not all columns have the same number of items", preferredStyle: UIAlertControllerStyle.alert)
+      let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
+        print("OK")
+      }
+      alertController.addAction(okAction)
+      self.present(alertController, animated: true, completion: nil)
+    }*/
+    
   }
+  
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.

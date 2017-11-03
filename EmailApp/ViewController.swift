@@ -10,7 +10,7 @@ import UIKit
 import MobileCoreServices
 
 
-class ViewController: UIViewController, UIDropInteractionDelegate, UITextViewDelegate, UITextDropDelegate {
+class ViewController: UIViewController, UIDropInteractionDelegate, UITextViewDelegate, UITextDropDelegate, UIPopoverPresentationControllerDelegate {
   
   @IBOutlet weak var emailBodyField: UITextView!
   @IBOutlet weak var scrollView: UIScrollView!
@@ -25,6 +25,7 @@ class ViewController: UIViewController, UIDropInteractionDelegate, UITextViewDel
   var shownList = [String]()
   var originIndexPath: Int?
   var initialSubjectText = ""
+  var smtpUserInfo = SMTPLogIn()
   
   
   override func viewDidLoad() {
@@ -43,9 +44,38 @@ class ViewController: UIViewController, UIDropInteractionDelegate, UITextViewDel
     emailBodyField.allowsEditingTextAttributes = true
     emailBodyField.layer.borderWidth = 0.5
     emailBodyField.layer.borderColor = UIColor.lightGray.cgColor
+    startCodableTest()
   }
   
+  @IBOutlet weak var settingsPopoverButton: UIBarButtonItem!
   
+  @IBAction func settingsPopoverPress(_ sender: Any) {
+    
+    let savingsInformationViewController = storyboard?.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
+    savingsInformationViewController.receivedData = smtpUserInfo
+    savingsInformationViewController.preferredContentSize = CGSize(width: 400.0, height: 260.0)
+
+    savingsInformationViewController.modalPresentationStyle = .popover
+    if let popoverController = savingsInformationViewController.popoverPresentationController {
+      popoverController.barButtonItem = settingsPopoverButton //anchor point of the animation
+      popoverController.permittedArrowDirections = .any
+      popoverController.delegate = self
+    }
+    present(savingsInformationViewController, animated: true, completion: nil)
+    print("im here")
+  }
+  
+  @IBAction func unwindWithSettings(sender: UIStoryboardSegue) {
+    if let sourceViewController = sender.source as? SettingsViewController {
+      let dataRecieved = sourceViewController.smtpLoginInfo
+      smtpUserInfo = dataRecieved
+      print(dataRecieved)
+      save()
+    }
+  }
+
+
+
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
@@ -126,6 +156,21 @@ class ViewController: UIViewController, UIDropInteractionDelegate, UITextViewDel
     //  updateLayers(forDropLocation: dropLocation)
   }
   
+  func save() {
+    let encoder = JSONEncoder()
+    if let encoded = try? encoder.encode(smtpUserInfo){
+      UserDefaults.standard.set(encoded, forKey: "smtpUserInfo")
+    }
+  }
+  
+  func startCodableTest() { //return toDoList from memory
+    if let memoryList = UserDefaults.standard.value(forKey: "smtpUserInfo") as? Data{
+      let decoder = JSONDecoder()
+      if let smtpUser = try? decoder.decode(SMTPLogIn.self, from: memoryList) {
+        smtpUserInfo = smtpUser
+      }
+    }
+  }
   
   
 }
